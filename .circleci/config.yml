@@ -175,12 +175,25 @@ jobs:
      - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - backend-build
+      - run:
+          name: "Install Dependencies"
+          command: |
+            sudo apt-get -y update
+            sudo apt-get -y install python3
+            sudo apt-get -y install awscli
+
+
       - run:
           name: Run migrations
           command: |
-            cd backend
-            npm install
-            npm run migrations > migrations_dump.txt
+             cd backend
+             sudo npm i
+             touch migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+             sudo npm run migrations >> migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+             cat migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
 
       - run:
           name: Send migration results to memstash
