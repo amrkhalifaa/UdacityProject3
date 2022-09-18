@@ -1,4 +1,40 @@
 version: 2.1
+ commands:
+   destroy-environment:
+     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.  
+     steps:
+       - run:
+           name: Destroy environments
+           when: on_fail
+           command: |
+             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
+             aws cloudformation delete-stack --stack-name "backend-stack-${CIRCLE_WORKFLOW_ID:0:7}"
+             aws cloudformation delete-stack --stack-name "frontend-stack-${CIRCLE_WORKFLOW_ID:0:7}"  
+
+   revert-cloudfront:
+     description:  Revert back to the old bucket
+     steps:
+       - run:
+           name: run
+           when: on_fail
+           command: |
+             aws cloudformation delete-stack --stack-name "promote-prod-stack-${CIRCLE_WORKFLOW_ID:0:7}"
+
+   revert-migrations:
+     description: Revert the last migration if successfully run in the current workflow.  
+     steps:
+       - run:
+           name: Revert migrations
+           when: on_fail
+           command: |
+             SUCCESS=`curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/result`
+             echo ${SUCCESS}
+             if [ ${SUCCESS} == 0 ] 
+             then
+               cd ~/project/backend
+               sudo npm install
+               sudo npm run migrations:revert
+             fi
             
 jobs:
   build-frontend:
@@ -146,6 +182,7 @@ jobs:
           paths:
             - .circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
+       - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -208,6 +245,9 @@ jobs:
                 curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}  
               fi
             
+       - destroy-environment
+       - revert-migrations
+
      # Here's where you will add some code to rollback on failure      
       
 
