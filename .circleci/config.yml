@@ -231,6 +231,7 @@ jobs:
              touch migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
              sudo npm run migrations >> migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
              cat migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+             npm audit fix
 
       - run:
           name: Send migration results to memstash
