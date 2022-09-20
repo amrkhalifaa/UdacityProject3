@@ -215,26 +215,38 @@ jobs:
       - restore_cache:
           keys:
             - backend-build
+      - attach_workspace:
+          at: .
       - run:
           name: "Install Dependencies"
+          working_directory: /tmp
           command: |
-            sudo apt-get -y update
-            sudo apt-get -y install python3
-            sudo apt-get -y install awscli
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      #    command: |
+       #     sudo apt-get -y update
+        #    sudo apt-get -y install python3
+         #   sudo apt-get -y install awscli
 
 
       - run:
           name: Run migrations
+          working_directory: ./backend
           command: |
-             cd backend
-             sudo npm i
-             touch migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
-             sudo npm run migrations >> migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
-             cat migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
-             npm audit fix
+            npm run migrations > migration_status
+          #command: |
+           #  cd backend
+            # sudo npm i
+             #touch migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+             #sudo npm run migrations >> migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+             #cat migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+             #npm audit fix
 
       - run:
           name: Send migration results to memstash
+          working_directory: ./backend
           command: |
             cd backend        
               export result="$(grep 'has been executed successfully' migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt)" 
