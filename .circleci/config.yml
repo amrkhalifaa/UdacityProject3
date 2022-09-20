@@ -234,7 +234,7 @@ jobs:
 
       - run:
           name: Run migrations
-          working_directory: ./backend
+        #  working_directory: ./backend
           #command: |
            # npm run migrations > migration_status
           command: |
@@ -258,9 +258,9 @@ jobs:
                 curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}  
               fi
             
-      - destroy-environment
-      - revert-migrations
-
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail  
      # Here's where you will add some code to rollback on failure      
       
 
