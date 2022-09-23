@@ -227,12 +227,6 @@ jobs:
           name: "Install Dependencies"
           working_directory: /tmp
           command: |
-            # sudo apt-get update && sudo apt-get install -yy less
-            # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            # unzip awscliv2.zip
-            # sudo ./aws/install
-            
-      
             sudo apt-get -y update
             sudo apt-get -y install python3
             sudo apt-get -y install awscli
