@@ -242,10 +242,13 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm install
+            ls -la
             touch migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
-            npm run migrations > migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+            ls -la
+            npm run migrations >> migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+            ls -la
             cat migrations-${CIRCLE_WORKFLOW_ID:0:7}.txt
+            ls -la 
 
           ##
       - run:
