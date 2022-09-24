@@ -338,10 +338,10 @@ jobs:
             apk add --update ansible curl rsync openssh nodejs npm
             ansible --version
             pip install awscli
-            aws --version  
+            aws --version
+              
       - run:
           name: Deploy backend
-          
           command: |
             cd backend
             npm i

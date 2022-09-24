@@ -12,6 +12,7 @@
 - name: "Install Dependencies"
   shell: |
     cd /home/ubuntu/backend
+    npm cache clean --force
     npm install
     npm run build
 - name: "Run the backend app"
