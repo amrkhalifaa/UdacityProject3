@@ -304,54 +304,54 @@ deploy-backend:
           when: on_fail
       
 
-deploy-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          keys:
-            - frontend-build
-      - run:
-          name: Install dependencies
-          working_directory: /tmp
-          command: |
-            sudo apt-get -y update
-            sudo apt-get -y install python3
-            sudo apt-get -y install awscli
-      - run:
-          name: Get backend url
-          command: |
-            cd frontend
-            touch .env
-            export BACKEND_IP=$(aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" > .env
-            cat .env
-      - run:
-          name: Deploy frontend objects
-          command: |
-            cd frontend
-            npm install
-            npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      
-      - persist_to_workspace:
-          root: .
-          paths:
-            - frontend/dist      
-      # Here's where you will add some code to rollback on failure      
-      - destroy_environment:
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
-          
-      - revert_migrations:
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
+  deploy-frontend:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
+        - attach_workspace:
+            at: .
+        - restore_cache:
+            keys:
+              - frontend-build
+        - run:
+            name: Install dependencies
+            working_directory: /tmp
+            command: |
+              sudo apt-get -y update
+              sudo apt-get -y install python3
+              sudo apt-get -y install awscli
+        - run:
+            name: Get backend url
+            command: |
+              cd frontend
+              touch .env
+              export BACKEND_IP=$(aws ec2 describe-instances \
+                --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --output text)
+              export API_URL="http://${BACKEND_IP}:3030"
+              echo "API_URL = ${API_URL}"
+              echo API_URL="http://${BACKEND_IP}:3030" > .env
+              cat .env
+        - run:
+            name: Deploy frontend objects
+            command: |
+              cd frontend
+              npm install
+              npm run build
+              tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+              aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+        
+        - persist_to_workspace:
+            root: .
+            paths:
+              - frontend/dist      
+        # Here's where you will add some code to rollback on failure      
+        - destroy_environment:
+            id: ${CIRCLE_WORKFLOW_ID:0:7}
+            
+        - revert_migrations:
+            id: ${CIRCLE_WORKFLOW_ID:0:7}
           
 
   
