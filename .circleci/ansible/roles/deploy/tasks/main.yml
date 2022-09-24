@@ -12,9 +12,8 @@
 - name: "Install Dependencies"
   shell: |
     cd /home/ubuntu/backend
-    sudo apt-get install -y npm
-    npm run build
-    npm list
+    sudo apt install npm
+    
 - name: "Run the backend app"
   shell: |
     cd /home/ubuntu/backend
