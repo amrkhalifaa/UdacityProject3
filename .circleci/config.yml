@@ -341,7 +341,7 @@ jobs:
             aws --version  
       - run:
           name: Deploy backend
-          working_directory: ./.circleci/ansibledas
+          
           command: |
             cd backend
             npm i
