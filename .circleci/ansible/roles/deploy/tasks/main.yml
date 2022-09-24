@@ -13,7 +13,8 @@
   shell: |
     cd /home/ubuntu/backend
     sudo apt-get install -y npm
-   # sudo npm run build
+    npm run build
+    npm list
 - name: "Run the backend app"
   shell: |
     cd /home/ubuntu/backend
