@@ -1,20 +1,20 @@
 ---
-  - name: "update packages."
+  - name: "update_packages."
     become: yes
     apt:
       update_cache: yes
 
-  - name: "upgrade packages"
+  - name: "upgrade_packages"
     become: yes
     apt:
       upgrade: yes
-
-  - name: "remove unrequired depen"
+      
+  - name: "remove dependencies that are no longer required"
     become: yes
     apt:
-      autoremove: yes
+      autoremove: yes   
 
-  - name: "install nodejs and npm"
+  - name: "install nodejs && npm"
     become: yes
     apt:
       name: ["nodejs", "npm"]
