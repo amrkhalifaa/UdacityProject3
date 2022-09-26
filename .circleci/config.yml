@@ -508,7 +508,10 @@ jobs:
       - revert-migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           
-      -  revert-cloudfront
+      -  revert-cloudfront:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
+
           
           
          
