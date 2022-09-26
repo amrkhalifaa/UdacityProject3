@@ -24,12 +24,17 @@ commands:
 
   revert-cloudfront:
     description:  Revert back to the old bucket
+    parameters:
+      when:
+        type: string
+      id:
+        type: string
     steps:
       - run:
-          name: run
-          when: on_fail
+          name: revert cloudfront
+          when: << parameters.when >>
           command: |
-            aws cloudformation delete-stack --stack-name "promote-prod-stack-${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation delete-stack --stack-name "InitialStack-${CIRCLE_WORKFLOW_ID:0:7}"
 
   revert-migrations:
     description: Revert the last migration
