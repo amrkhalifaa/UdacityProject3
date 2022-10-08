@@ -132,7 +132,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-            
+     ##       
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
